@@ -1,0 +1,6 @@
+{
+  "name": "中国体育长辈赛事看板",
+  "description": "专为长辈打造的中国篮球与足球极简赛事看板，超大字号清晰呈现比赛双方归属地、轮次、开赛时间与当前第几节实时比分。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
