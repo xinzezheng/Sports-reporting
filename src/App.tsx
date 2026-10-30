@@ -9,7 +9,10 @@ import {
   Clock,
   Radio,
   Search,
-  Check
+  Check,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink
 } from 'lucide-react';
 import {
   MatchItem,
@@ -17,6 +20,7 @@ import {
   DateTabItem,
   ALL_LEAGUES,
   LeagueCategory,
+  OFFICIAL_DATA_SOURCES,
   getLiveMatchesByDay
 } from './sportsData.ts';
 
@@ -28,6 +32,7 @@ export default function App() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [searchKey, setSearchKey] = useState<string>('');
   const [verifyNotice, setVerifyNotice] = useState<string | null>(null);
+  const [showSourceList, setShowSourceList] = useState<boolean>(false);
 
   // 免VPN全网通用刷新逻辑
   const loadMatches = useCallback((isManualRefresh = false) => {
@@ -39,7 +44,7 @@ export default function App() {
       setMatches(localResult.matches);
 
       if (isManualRefresh) {
-        setVerifyNotice(`已同步赛事实况（北京时间 ${localResult.updateTimeStr}）`);
+        setVerifyNotice(`已同步指定信源最新赛况（北京时间 ${localResult.updateTimeStr}）`);
         setTimeout(() => setVerifyNotice(null), 3000);
       }
     } finally {
@@ -87,10 +92,10 @@ export default function App() {
       {/* 手机端视口容器：宽度锁定 max-w-md，杜绝溢出与多余换行 */}
       <div className="w-full max-w-md mx-auto flex-1 flex flex-col pb-8">
 
-        {/* 顶部紧凑导航栏：向上提紧，不占空间，仅保留左侧标题与右侧刷新 */}
-        <header className="sticky top-0 z-30 bg-amber-600 text-white shadow-xs px-3.5 py-2">
+        {/* 顶部紧凑导航栏：向上紧靠，极小高度不占空间，仅保留左侧标题与右侧刷新 */}
+        <header className="sticky top-0 z-30 bg-amber-600 text-white shadow-xs px-3.5 py-1.5">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-none py-1">
               体育赛程
             </h1>
 
@@ -99,9 +104,9 @@ export default function App() {
               type="button"
               onClick={() => loadMatches(true)}
               disabled={refreshing}
-              className="px-3.5 py-1.5 bg-white text-amber-900 active:bg-amber-50 rounded-lg text-sm sm:text-base font-extrabold shadow-xs flex items-center gap-1.5 transition-transform active:scale-95 shrink-0"
+              className="px-3.5 py-1 bg-white text-amber-900 active:bg-amber-50 rounded-lg text-sm sm:text-base font-extrabold shadow-xs flex items-center gap-1.5 transition-transform active:scale-95 shrink-0"
             >
-              <RotateCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-amber-600' : ''}`} />
+              <RotateCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-amber-600' : ''}`} />
               <span>{refreshing ? '刷新中' : '刷新'}</span>
             </button>
           </div>
@@ -116,7 +121,7 @@ export default function App() {
         )}
 
         {/* 搜索与分类导航区 */}
-        <div className="px-3 pt-2.5 pb-2 space-y-2.5">
+        <div className="px-3 pt-2 pb-2 space-y-2">
           
           {/* 搜索栏 */}
           <div className="relative">
@@ -125,7 +130,7 @@ export default function App() {
               value={searchKey}
               onChange={(e) => setSearchKey(e.target.value)}
               placeholder="搜索球队、选手或城市"
-              className="w-full pl-10 pr-9 py-2.5 text-base sm:text-lg bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-amber-600 text-slate-800 placeholder:text-slate-400 font-semibold shadow-xs"
+              className="w-full pl-10 pr-9 py-2 text-base sm:text-lg bg-white border-2 border-slate-300 rounded-xl focus:outline-none focus:border-amber-600 text-slate-800 placeholder:text-slate-400 font-semibold shadow-xs"
             />
             <Search className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             {searchKey && (
@@ -167,7 +172,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* 赛事分类滑动栏：全部 / CBA / 中超 / 英超 / 乒乓球 / 跳水 */}
+          {/* 指定赛事分类滑动栏：全部 / CBA / 中超 / 英超 / 欧冠 / NBA / 乒乓球 */}
           <div className="overflow-x-auto scrollbar-none py-0.5">
             <div className="flex items-center gap-1.5">
               {ALL_LEAGUES.map((lg) => {
@@ -198,7 +203,7 @@ export default function App() {
           {loading ? (
             <div className="bg-white rounded-xl p-8 text-center border border-slate-200 mt-3">
               <RotateCw className="w-8 h-8 text-amber-600 animate-spin mx-auto mb-2" />
-              <p className="text-base sm:text-lg font-bold text-slate-800">正在整理赛事实况...</p>
+              <p className="text-base sm:text-lg font-bold text-slate-800">正在整理指定信源赛事实况...</p>
             </div>
           ) : displayedMatches.length === 0 ? (
             <div className="bg-white rounded-xl p-8 text-center border border-slate-200 mt-2">
@@ -255,7 +260,7 @@ export default function App() {
                       {match.homeTeam.name}
                     </div>
 
-                    {/* 来自地：精致小标签与平整字色 */}
+                    {/* 来自地与战绩：精致小标签与平整字色 */}
                     <div className="flex items-center gap-1 mt-1 text-slate-700 text-xs sm:text-sm font-bold truncate">
                       <span className="bg-amber-100 text-amber-900 px-1 py-0.2 rounded text-[10px] font-black shrink-0">
                         来自
@@ -263,6 +268,11 @@ export default function App() {
                       <span className="truncate">
                         {match.homeTeam.fullOrigin}
                       </span>
+                      {match.homeTeam.rankOrRecord && (
+                        <span className="text-[11px] text-slate-600 font-extrabold bg-slate-100 px-1 rounded shrink-0">
+                          {match.homeTeam.rankOrRecord}
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -282,8 +292,13 @@ export default function App() {
                       {match.awayTeam.name}
                     </div>
 
-                    {/* 来自地：右对齐精致标签 */}
+                    {/* 来自地与战绩：右对齐精致标签 */}
                     <div className="flex items-center justify-end gap-1 mt-1 text-slate-700 text-xs sm:text-sm font-bold truncate">
+                      {match.awayTeam.rankOrRecord && (
+                        <span className="text-[11px] text-slate-600 font-extrabold bg-slate-100 px-1 rounded shrink-0">
+                          {match.awayTeam.rankOrRecord}
+                        </span>
+                      )}
                       <span className="truncate">
                         {match.awayTeam.fullOrigin}
                       </span>
@@ -296,8 +311,20 @@ export default function App() {
                 </div>
 
                 {/* 当前比赛进度条：纯粹客观，绝无“激战”字眼 */}
-                <div className="bg-slate-50 rounded-xl px-3 py-2 text-xs sm:text-sm font-extrabold text-amber-950 flex items-center gap-1.5 border border-slate-100">
-                  <Radio className="w-3.5 h-3.5 text-rose-600 animate-pulse shrink-0" />
+                <div
+                  className={`rounded-xl px-3 py-2 text-xs sm:text-sm font-extrabold flex items-center gap-1.5 border ${
+                    match.progressStatus === '已结束'
+                      ? 'bg-slate-50 text-slate-700 border-slate-200'
+                      : match.progressStatus === '进行中'
+                      ? 'bg-rose-50 text-rose-800 border-rose-200'
+                      : 'bg-blue-50 text-blue-800 border-blue-200'
+                  }`}
+                >
+                  {match.progressStatus === '进行中' ? (
+                    <Radio className="w-3.5 h-3.5 text-rose-600 animate-pulse shrink-0" />
+                  ) : (
+                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  )}
                   <span className="truncate">{match.progressDetail}</span>
                 </div>
 
@@ -311,6 +338,41 @@ export default function App() {
             ))
           )}
         </main>
+
+        {/* 底部指定官方数据来源透明公开栏（中国大陆直连免VPN） */}
+        <section className="px-3 mt-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-3 text-xs text-slate-600">
+            <button
+              type="button"
+              onClick={() => setShowSourceList(!showSourceList)}
+              className="w-full flex items-center justify-between font-bold text-slate-800 text-xs sm:text-sm"
+            >
+              <span>指定赛事官方数据源清单（免VPN直连）</span>
+              {showSourceList ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+
+            {showSourceList && (
+              <div className="mt-2.5 pt-2 border-t border-slate-100 space-y-1.5 text-slate-700">
+                {OFFICIAL_DATA_SOURCES.map((src) => (
+                  <div key={src.league} className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5">
+                    <span className="font-extrabold text-slate-900">
+                      {src.icon} {src.league}（{src.name}）:
+                    </span>
+                    <a
+                      href={src.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-amber-700 hover:text-amber-900 underline truncate max-w-[280px] flex items-center gap-1"
+                    >
+                      <span className="truncate">{src.url}</span>
+                      <ExternalLink className="w-3 h-3 shrink-0" />
+                    </a>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
 
       </div>
 
