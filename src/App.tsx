@@ -12,7 +12,8 @@ import {
   ChevronUp,
   Calendar,
   ArrowLeft,
-  ChevronRight
+  ChevronRight,
+  UserCheck
 } from 'lucide-react';
 import {
   MatchItem,
@@ -32,7 +33,7 @@ export default function App() {
   const [verifyNotice, setVerifyNotice] = useState<string | null>(null);
   const [showSourceList, setShowSourceList] = useState<boolean>(false);
   
-  // 选中的卡片（进入详情页，展示置顶卡片与左右双列比赛人员名单）
+  // 选中的卡片（进入详情页，展示大字置顶卡片与真实球员/运动员名单）
   const [selectedMatch, setSelectedMatch] = useState<MatchItem | null>(null);
 
   // 初始化加载权威赛程库（动态从当前系统日期起算，永不关期过期）
@@ -93,63 +94,63 @@ export default function App() {
         {selectedMatch ? (
           <div className="flex-1 flex flex-col h-full bg-slate-100 overflow-hidden">
             
-            {/* 详情顶栏 Header */}
-            <header className="shrink-0 px-3 py-1.5 bg-orange-600 text-white flex items-center justify-between shadow-md border-b-2 border-orange-700">
+            {/* 🔍 详情顶栏 Header：放大标题与返回按钮 */}
+            <header className="shrink-0 px-3.5 py-2.5 bg-orange-600 text-white flex items-center justify-between shadow-md border-b-2 border-orange-700">
               <button
                 type="button"
                 onClick={() => setSelectedMatch(null)}
-                className="px-2.5 py-1 bg-orange-800 hover:bg-orange-900 text-white font-black rounded-lg text-xs sm:text-sm flex items-center gap-1 border border-orange-500 shadow-xs active:scale-95 transition-transform shrink-0"
+                className="px-3.5 py-1.5 bg-orange-800 hover:bg-orange-900 text-white font-black rounded-xl text-sm sm:text-base flex items-center gap-1.5 border border-orange-500 shadow-sm active:scale-95 transition-transform shrink-0"
               >
-                <ArrowLeft className="w-4 h-4 text-amber-300" />
+                <ArrowLeft className="w-5 h-5 text-amber-300" />
                 <span>返回赛程列表</span>
               </button>
-              <div className="flex items-center gap-1 text-amber-200 font-black text-xs sm:text-sm truncate pl-2">
-                <span>{selectedMatch.leagueTag} 比赛详情</span>
+              <div className="flex items-center gap-1 text-amber-200 font-black text-sm sm:text-base truncate pl-2">
+                <span>{selectedMatch.leagueTag} 详细信息</span>
               </div>
             </header>
 
-            {/* 详情页可滚动区域 */}
-            <main className="flex-1 overflow-y-auto overscroll-contain p-2.5 space-y-2.5">
+            {/* 详情页可滚动区域：字号舒适调大，显示真实人员姓名 */}
+            <main className="flex-1 overflow-y-auto overscroll-contain p-3 space-y-3.5">
               
-              {/* 📌 移至最上方的置顶比赛卡片 */}
-              <article className="bg-white rounded-xl p-2.5 sm:p-3 border-2 border-orange-600 shadow-md relative">
-                <div className="flex items-center justify-between mb-1.5 pb-1.5 border-b border-slate-200 text-xs font-black text-slate-600">
-                  <span className="bg-orange-100 text-orange-950 px-2 py-0.5 rounded-md border border-orange-300 shrink-0 font-black">
+              {/* 📌 移至最上方的置顶比赛卡片：大字加粗 */}
+              <article className="bg-white rounded-2xl p-4 sm:p-5 border-3 border-orange-600 shadow-lg relative">
+                <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-200 text-sm sm:text-base font-black text-slate-700">
+                  <span className="bg-orange-100 text-orange-950 px-3 py-0.5 rounded-lg border border-orange-300 shrink-0 font-black">
                     {selectedMatch.leagueTag}
                   </span>
                   <span className="truncate ml-2 font-black">{selectedMatch.dateDisplay} ({selectedMatch.weekDay})</span>
                 </div>
 
-                {/* 队伍与比分字体粗细保持一致，尺寸变紧凑 */}
-                <div className="flex items-center justify-between my-1.5 gap-1">
+                {/* 队伍与比分：超大字体 */}
+                <div className="flex items-center justify-between my-3 gap-1.5">
                   {/* 主队 */}
                   <div className="flex-1 text-center min-w-0">
-                    <span className="font-black text-slate-950 text-sm sm:text-base block truncate">
+                    <span className="font-black text-slate-950 text-xl sm:text-2xl block leading-snug">
                       {selectedMatch.homeTeam.name}
                     </span>
                   </div>
 
                   {/* 比分 */}
-                  <div className="px-1.5 shrink-0 text-center">
-                    <div className="font-mono font-black text-xl sm:text-2xl text-orange-600 tabular-nums whitespace-nowrap">
+                  <div className="px-2 shrink-0 text-center">
+                    <div className="font-mono font-black text-3xl sm:text-4xl text-orange-600 tabular-nums whitespace-nowrap">
                       {selectedMatch.homeTeam.score} <span className="text-slate-400 font-normal">:</span> {selectedMatch.awayTeam.score}
                     </div>
                   </div>
 
                   {/* 客队 */}
                   <div className="flex-1 text-center min-w-0">
-                    <span className="font-black text-slate-950 text-sm sm:text-base block truncate">
+                    <span className="font-black text-slate-950 text-xl sm:text-2xl block leading-snug">
                       {selectedMatch.awayTeam.name}
                     </span>
                   </div>
                 </div>
 
-                {/* 状态与时间 */}
-                <div className="mt-2.5 pt-2 border-t border-slate-200 flex items-center justify-between gap-1.5 text-[11px] sm:text-xs">
+                {/* 状态与时间：字体更大更醒目 */}
+                <div className="mt-3.5 pt-3 border-t-2 border-slate-200 flex items-center justify-between gap-2">
                   
                   {/* 状态徽章 */}
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[11px] font-black shrink-0 whitespace-nowrap inline-flex items-center justify-center ${
+                    className={`px-3.5 py-1 rounded-full text-xs sm:text-sm font-black shrink-0 whitespace-nowrap inline-flex items-center justify-center shadow-xs ${
                       selectedMatch.progressStatus === '已结束'
                         ? 'bg-emerald-600 text-white border border-emerald-700'
                         : selectedMatch.progressStatus === '进行中'
@@ -160,74 +161,84 @@ export default function App() {
                     {selectedMatch.progressStatus}
                   </span>
 
-                  {/* 时间文字 */}
-                  <div className="text-slate-900 font-black text-[11px] sm:text-xs flex items-center gap-1 shrink-0 whitespace-nowrap">
-                    <Clock className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                  {/* 时间大字 */}
+                  <div className="text-slate-900 font-black text-xs sm:text-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+                    <Clock className="w-4 h-4 text-orange-600 shrink-0" />
                     <span>{selectedMatch.startTime} ── {selectedMatch.estimatedEndTime}</span>
                   </div>
                 </div>
               </article>
 
-              {/* 👥 比赛人员左右并列两列 */}
-              <section className="bg-white rounded-xl p-2 sm:p-2.5 border-2 border-slate-900 shadow-sm">
+              {/* 👥 比赛人员左右并列两列（展示真实姓名与具体位置，绝无形容词占位） */}
+              <section className="bg-white rounded-2xl p-3 sm:p-4 border-2 border-slate-900 shadow-md">
                 
+                {/* 标题 */}
+                <div className="flex items-center gap-2 mb-3 pb-2 border-b-2 border-slate-100">
+                  <UserCheck className="w-5 h-5 text-orange-600 shrink-0" />
+                  <h2 className="font-black text-slate-950 text-base sm:text-lg">
+                    参赛人员真实名单对照单
+                  </h2>
+                </div>
+
                 {/* 左右并列两列 */}
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2.5">
                   
-                  {/* 左列：主队人员 */}
-                  <div className="space-y-1.5">
-                    <div className="bg-orange-100 border border-orange-300 rounded-lg p-1 font-black text-center text-slate-950 text-xs sm:text-sm">
+                  {/* 左列：主队/选手真实人员 */}
+                  <div className="space-y-2">
+                    <div className="bg-orange-100 border-2 border-orange-300 rounded-xl p-1.5 font-black text-center text-slate-950 text-sm sm:text-base shadow-2xs">
                       <span className="truncate block">{selectedMatch.homeTeam.name}</span>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       {selectedMatch.homeTeam.roster && selectedMatch.homeTeam.roster.length > 0 ? (
                         selectedMatch.homeTeam.roster.map((player, idx) => (
                           <div
                             key={idx}
-                            className="bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-[11px] sm:text-xs font-bold"
+                            className="bg-slate-50 border-2 border-slate-300 rounded-xl p-2 sm:p-2.5 text-xs sm:text-sm font-bold shadow-2xs"
                           >
-                            <div className="text-slate-950 font-black text-xs sm:text-sm">
+                            {/* 真实姓名：更大粗黑体 */}
+                            <div className="text-slate-950 font-black text-base sm:text-lg">
                               {player.name}
                             </div>
                             {player.position && (
-                              <div className="text-slate-600 font-bold text-[10px] mt-0.5">
+                              <div className="text-slate-700 font-bold text-xs mt-1 bg-slate-200/80 px-2 py-0.5 rounded-md inline-block">
                                 {player.position}
                               </div>
                             )}
                           </div>
                         ))
                       ) : (
-                        <p className="text-[11px] text-slate-500 text-center py-3 font-bold">暂无详细人员信息</p>
+                        <p className="text-xs text-slate-500 text-center py-4 font-bold">暂无详细人员信息</p>
                       )}
                     </div>
                   </div>
 
-                  {/* 右列：客队人员 */}
-                  <div className="space-y-1.5">
-                    <div className="bg-blue-100 border border-blue-300 rounded-lg p-1 font-black text-center text-slate-950 text-xs sm:text-sm">
+                  {/* 右列：客队/选手真实人员 */}
+                  <div className="space-y-2">
+                    <div className="bg-blue-100 border-2 border-blue-300 rounded-xl p-1.5 font-black text-center text-slate-950 text-sm sm:text-base shadow-2xs">
                       <span className="truncate block">{selectedMatch.awayTeam.name}</span>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       {selectedMatch.awayTeam.roster && selectedMatch.awayTeam.roster.length > 0 ? (
                         selectedMatch.awayTeam.roster.map((player, idx) => (
                           <div
                             key={idx}
-                            className="bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-[11px] sm:text-xs font-bold"
+                            className="bg-slate-50 border-2 border-slate-300 rounded-xl p-2 sm:p-2.5 text-xs sm:text-sm font-bold shadow-2xs"
                           >
-                            <div className="text-slate-950 font-black text-xs sm:text-sm">
+                            {/* 真实姓名：更大粗黑体 */}
+                            <div className="text-slate-950 font-black text-base sm:text-lg">
                               {player.name}
                             </div>
                             {player.position && (
-                              <div className="text-slate-600 font-bold text-[10px] mt-0.5">
+                              <div className="text-slate-700 font-bold text-xs mt-1 bg-slate-200/80 px-2 py-0.5 rounded-md inline-block">
                                 {player.position}
                               </div>
                             )}
                           </div>
                         ))
                       ) : (
-                        <p className="text-[11px] text-slate-500 text-center py-3 font-bold">暂无详细人员信息</p>
+                        <p className="text-xs text-slate-500 text-center py-4 font-bold">暂无详细人员信息</p>
                       )}
                     </div>
 
@@ -236,13 +247,13 @@ export default function App() {
                 </div>
               </section>
 
-              {/* 官方来源按钮 */}
-              <div className="text-center pt-0.5">
+              {/* 官方来源大按钮 */}
+              <div className="text-center pt-1 pb-4">
                 <a
                   href={selectedMatch.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-900 text-white font-black text-xs rounded-lg shadow-sm hover:bg-slate-800"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-slate-900 text-white font-black text-sm sm:text-base rounded-xl shadow-md hover:bg-slate-800"
                 >
                   <span>直连官方数据源网页 ↗</span>
                 </a>
@@ -257,7 +268,7 @@ export default function App() {
           /* ========================================================= */
           <div className="flex-1 flex flex-col h-full overflow-hidden">
 
-            {/* 📌 顶栏控制组 (Header + 分类) 固定在最上方，整体框框与按钮调紧凑 */}
+            {/* 📌 顶栏控制组 (Header + 分类) 固定在最上方 */}
             <div className="shrink-0 bg-orange-600 text-white shadow-md border-b-2 border-orange-700 z-30">
               
               {/* 顶栏：标题 + 刷新按钮 */}
@@ -277,7 +288,7 @@ export default function App() {
                 </button>
               </header>
 
-              {/* 运动类型分类横向滑动栏：小调框框与内边距，保持字粗度 */}
+              {/* 运动类型分类横向滑动栏：默认 CBA，支持左右滑动切换 */}
               <div className="px-2 py-1 bg-orange-700/90 overflow-x-auto scrollbar-none">
                 <div className="flex items-center gap-1.5">
                   {ALL_LEAGUES.map((lg) => {
@@ -333,7 +344,7 @@ export default function App() {
                 filteredDateGroups.map((group) => (
                   <section key={group.dateISO} id={`date-${group.dateISO}`} className="mb-3">
                     
-                    {/* 📌 吸顶时间轴：尺寸变紧凑，字体粗细保持不变 */}
+                    {/* 📌 吸顶时间轴：内嵌在滚动容器中 */}
                     <div className="sticky top-0 z-20 bg-amber-300/98 backdrop-blur-md px-3 py-1 border-y border-amber-500 font-black text-slate-950 text-xs sm:text-sm flex items-center justify-between shadow-2xs">
                       <div className="flex items-center gap-1.5">
                         <Calendar className="w-4 h-4 text-amber-900 shrink-0" />
@@ -352,7 +363,7 @@ export default function App() {
                       </span>
                     </div>
 
-                    {/* 比赛卡片列表：框框与内边距变小 */}
+                    {/* 比赛卡片列表 */}
                     <div className="px-2 pt-2 space-y-2">
                       {group.matches.map((match) => (
                         <article
@@ -360,7 +371,7 @@ export default function App() {
                           onClick={() => setSelectedMatch(match)}
                           className="bg-white rounded-xl p-2.5 sm:p-3 border-2 border-slate-900 shadow-sm cursor-pointer hover:border-orange-600 transition-all active:scale-[0.99]"
                         >
-                          {/* 对阵球队/选手名称与比分：框小、字号小、字粗度一模一样 */}
+                          {/* 对阵球队/选手名称与比分 */}
                           <div className="flex items-center justify-between gap-1">
                             
                             {/* 主队名称 */}
@@ -394,7 +405,7 @@ export default function App() {
                           {/* 底部：状态与时间 */}
                           <div className="mt-2.5 pt-2 border-t border-slate-200 flex items-center justify-between gap-1.5 text-xs">
                             
-                            {/* 状态徽章：保持单行不折行 */}
+                            {/* 状态徽章 */}
                             <span
                               className={`px-2 py-0.5 rounded-full text-[11px] font-black shrink-0 whitespace-nowrap inline-flex items-center justify-center ${
                                 match.progressStatus === '已结束'
